@@ -1,20 +1,29 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const cors = require("cors")
-const product = require("./models/product")
+const {productmodel} = require("./models/product")
 
 
 const app = express()
 app.use(cors())
+app.use(express.json())
 
-app.get("/",(req,res)=>{
-    res.send("hello")
-})
 
+mongoose.connect("mongodb+srv://sabeeha02:sabeehamongodb@cluster0.05m7a.mongodb.net/productdb?retryWrites=true&w=majority&appName=Cluster0")
 app.post("/add",(req,res)=>{
-    res.send("Welcome to Add Product page")
+    let input = req.body
+    let product = new productmodel(input)
+    product.save()
+   res.json({"status":"success"})
 })
 
-app.listen(8080,()=>{
+app.get("/view",(req,res)=>{
+    productmodel.find().then(
+        (data)=>{
+            res.json(data)
+        }
+    ).catch().finally()
+})
+app.listen(8083,()=>{
     console.log("Server started")
 })
